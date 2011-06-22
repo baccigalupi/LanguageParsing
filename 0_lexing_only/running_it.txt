@@ -1,0 +1,26 @@
+# 0_repeater --------------------------------------------------------------
+# The repeater just repeats back the calculation given, with a =? at the end
+
+# Using the lexer on its own
+flex -o 0_repeater.c 0_repeater.lex # makes an output file tokens.c from tokens.lex
+
+# using the lexer
+gcc 0_repeater.c -lfl -o 0_repeater # this will create a binary file that can be run with the name 'repeater'
+# or alternately with clang
+clang 0_repeater.c -lfl -o 0_repeater
+
+./repeater # runs the application, will take input and run the code
+
+
+# 1_simple_calculator ------------------------------------
+# This has simple calculator c++ classes that builds tokens and adds them to a queue
+clang++ -o 1_simple_calculator 1_simple_calculator.cpp # uncomment the test first to see how it works
+# Then you can see this with the lexer in action
+flex -o 1_simple_calculator_lex.c 1_simple_calculator.lex
+# compiling the lexer
+clang++ 1_simple_calculator_lex.c -o 1_simple_calculator_lex
+# running the executable
+./1_simple_calculator_lex
+
+# 2_simple_calculator -------------------------------------
+# In this version we switch over to using flexes own token system instead of building out own.
