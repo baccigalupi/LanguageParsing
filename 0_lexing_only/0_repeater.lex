@@ -15,7 +15,4 @@ number {digit}+(\.{digit}+)?(E[+-]+{digit}+)?
 %%
 
 /* helper functions */
-
-
-
-
+  // none here, move along

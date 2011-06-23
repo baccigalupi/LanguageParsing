@@ -1,0 +1,26 @@
+Language Building Motivation
+6/22/2011
+
+At a time, not too long ago, before Borders books eliminated one of the last big independent bookstores in San Francisco ... yes, a time before they took everyone out and then went bankrupt themselves ... I was standing in the incredibly delicious tech section of Stacey's, drooling over books. Wandering around aimlessly like a pervert in the porn store, I touched the cover of a book that I had owned many years before, "The ANSI C, C Programming Language" by Brian W. Kernighan. I opened the cover and it was like opening a very delicious chocolate bar. Inside, the typesetting still looked like the photocopy work of a secretary with bad typing habits. It was quaint; It was my first ever programming book. 
+
+I taught myself C while reading through this book. The coders of the day that learned of my self-learned status had nothing but disrespect for me, but I still insist that I learned it better that others who took it in a class. After over a decade without using C, it was quite absent from by brain, and I found myself so spoiled by dynamic languages that compiling was foreign. Despite being in between jobs at a brief moment in time when the market was afraid to hire even a Rubyist, I bought the book.
+
+I thought, wouldn't it be awesome to create some faster Ruby something with embedded C? Then I got a job that required much less exotic performance optimizations. I spent my time doing things like optimizing SQL and paying attention to runaway loops. Until a couple months ago, the book was sitting on my floor, or a shelf, waiting for a good use. 
+
+Then Cohuman hired an overseas development company to do an iPhone app. It was really a disaster. The specs we gave them were so much like suggestions. There was also a seemingly endless loop with anything that produced a code challenge. They would ask a question; we would answer it; they would say 'Yes, we will do that.'; there would be a multi-day pause; they would ask the same question again, as though it were a brand new thought. In preparation for receiving, their glob of scary and untested code, I started learning Objective-C.
+
+At the same time my nephew started learning MacRuby while trying to build a desktop application. During the process of his struggle, he taught me that the motivation for the language was not to lure Rubyists into Mac Desktop application, it was to lure Objective-C coders into Ruby. As a result the language usage is filled with camelCasedMethodNamesOfEnormousLength, in a very unRuby way. I already knew that MacRuby's dependency on the Objective-C garbage collection made it an impossible tool for building either iPad or iPhone applications. So, indeed, MacRuby is of little use to a Rubyist in search of a pleasant iOS experience.
+
+Objective-C actually is a language with a lot of flexibility and capability. Stripping away its syntax it looks a lot like Ruby: 
+- is introspective
+- allows dynamic addition of methods to classes
+- is object-oriented with both inheritance and mixins
+- has closures/blocks
+
+The really huge difference between Ruby and Objective-C is the interpreted nature of Ruby and the compiled nature of Objective-C. 
+
+Given how close Objective-C is to Ruby in dynamic capabilities, it makes the difference seem cumbersome, and like Objective-C chose the worst parts of a high level and low level language. Of course a lot of this is stylistic, and subjective. The Objective-C lovers likely hate Ruby for the opposite reasons. All of this could digress into a debate about whether the additional information of using different method calling for properties than for other instance methods is in fact a hinderance of a benefit, but who cares really. 
+
+My real point is that these minor differences, that seem so major, have me exploring the ways that these two languages are constructed. For the first time ever I looked at the source code for various Rubies, and was completely lost. My fetishized C book came off the shelf, and still I was lost. I brushed up on my C++ and was lost. I just couldn't find the entry point for the parsing of the text files into executable code. So I consulted Doctor Google. Many a people were wondering "How can a construct a language? Where do I start?". The response from the world was, "You are too stupid. I can't believe you are even asking this." This is a response I typically get to everything that I ask, and it is wrong. Eventually from little dribbles of information in between the admonishments, I discovered a good book on building languages, some decent blog posts and some software used for compiling compilers. 
+
+My intention is too write a couple posts on what it takes to create a programming language.
