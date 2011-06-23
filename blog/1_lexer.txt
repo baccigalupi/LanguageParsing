@@ -4,13 +4,47 @@ Language Parsing: The Lexer
 The first problem/question I encountered when I started to explore how to make a language is 
 "How does a text file get converted into executable code in a brand new language?".
 
-It turns out lots of really smart people have recognized the recurring need for new languages and have built tools whose sole purpose is to compile compilers. The most enduring called Yacc, an acronym for "Yet another compiler compiler". It has a companion tool for lexical analysis called Lex. Their latest incarnations are Bison and Flex. It is the job of the lexical analysis tool to look at an input stream and identify tokens. The job of the larger parser, Bison or Yacc, is to assemble programmatic meaning out for the stream of tokens. While the two programs are significantly different, their usage is typically bound. The Bison files define the grammar, and the Flex files identify tokens, but only as a pair to they deconstruct a language. 
+It turns out lots of really smart people have recognized the recurring need for new languages and have built tools whose sole purpose is to compile compilers. The most enduring tool is called Yacc, an acronym for "Yet another compiler compiler". It has a companion tool for lexical analysis called Lex. Their latest incarnations are Bison and Flex. It is the job of the lexical analysis tool to look at an input stream and identify tokens. The job of the larger parser, Bison or Yacc, is to assemble programmatic meaning out for the stream of tokens. While the two programs are significantly different, their usage is typically bound. The Bison files define the grammar, and the Flex files identify tokens, but only as a pair to they deconstruct a language. 
 
 As a first experiment, I wanted to try to build something with the lexer alone. The remainder of this post will be about two experiments with Flex. In the first experiment, the application uses Flex to repeat slightly modified the any input that matches basic calculator functionality. This is an easy way to assure that the token pattern matching is correct. In the second experiment, I build a C++ class for the doing really basic calculations on a queue of tokens. It goes from left to right only, and dies in any situation where the input doesn't follow expectations. These limitation highlight the necessity for Bison, and I will get into combining the two application in the next section.
+
+Flexing
 
 Flex is mostly written in C, but has a bit of domain specific language, DSL, binding it together. Files have to follow a certain format:
 
 <script src="https://gist.github.com/1042801.js"> </script>
 
-The above gist file won't actually run, since we don't have a my_file.c for the lexer to include. Checkout the project to get some source code that will actually run. 
+The above gist file won't actually run, since we don't have a my_file.c for the lexer to include. Checkout the project to get some source code that will actually run. https://github.com/baccigalupi/LanguageParsing
+
+Given that source code and a Flex DSL file called 0_repeater.lex, a few steps need to happen in order to get to a functional program:
+
+<script src="https://gist.github.com/1042838.js"> </script>
+
+The above gist has comments describing what happens each step, but I wanted to add a few comments for those, like me, who haven't used C in more than a decade:
+
+In each of these commands the -o option specifies the output file name. Flex has a default file name based on the original file name and some extra extensions. Clang/gcc will output a binary in the form of a.output unless an output format is specified. In addition we are passing the -lfl argument to Clang/gcc. -l argument tell the compiler to link the referenced library. In this case, that library is fl for flex. Another call might be -lfoo for the foo library. Lastly, I have been preferring Clang to gcc because it has really pretty colored output. Less superficial people prefer Clang because it catches more errors than gcc. For such a small endeavor, there really isn't a difference in functionality.
+
+Running the executable should build a repeater for our calculator tokens. So if we give the command line "2 + 4" it will return "2+4=?\n". Ultimately, this is pretty useless, but it proves that we can use Flex to attach random code to tokens. Now that the first experiment has passed, let's continue on to the next one which will produce equally useless code.
+
+Flexing with real code
+
+This next experiment is an attempt to attach real calculation code to the token exchange. It works by adding each token to a queue and then waiting for a new line to perform the calculations on the queue. This essentially boils our calculation language into one simple grammar, since all the calculations happen from left to right. We could build a much better queue calculation system that would take into account precedence of operators, unexpected token order and other anomalies. This would essentially build an abstract syntax tree and walk the tree to evaluate the language. Since the goal of Bison and its grammars is to establish such a tree, we are going to forgo such acts of rebuilding the wheel in favor of experimentation with an inadequate square-type wheel.
+
+Here is the new Flex file for our calculation program:
+
+<script src="https://gist.github.com/1042901.js"> </script>
+
+At the top, you can see that we have done something funny with the DSL there is a call to %option. Unsurprisingly, this is the best way to provide options to Flex. Earlier, I wrote about running the generated flex file while linking to the library. The reason we needed to do that is that the library provides a really basic function "main" to run our flex file. It also provides information on what to do about wrapping. By providing a function "main" in the helper section, and by providing the "nowrap" option, we choose to leave off the linked library when we run it.
+
+After establishing options, there are some C++ lines that includes the calculator code and establish variables. The regular expressions for token rules remain the same, but there is now a little more code attached to each token. For each operator a token from our calculator code is created. Looking at the calculator code you can see that the Token object only holds two things, the type of token which will be used later in the calculation phase, and the value of the number, which is only set if the token is recognized as a number. The very unDRY code in our Flex file creates a token of the correct type and subsequently adds it to the end of a queue. The queue, established in the same C++ file, is just a standard vector.
+
+Finally, when a new line token is given, the queue will calculate itself (poorly).
+
+To run the application, the same three part dance happens. 
+
+Before we get to the exciting conclusion, I want to invite you to look at the source code generated by Flex. You can see that there is a lot of overhead related to reading through the input stream. It is pretty easy to see where our customization occur:
+
+<script src="https://gist.github.com/1042965.js"> </script>
+
+Flex has fabulously simplified our program into a giant switch statement. Now run the code and watch is work (sometimes). 
 
